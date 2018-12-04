@@ -1,4 +1,4 @@
-function R = Initial(~)
+function x0 = Initial(~)
 global params;
 [T,Nh]=size(params.I);
 inflow=params.I;
@@ -19,13 +19,16 @@ for i=1:Nh
     x = vertcat(x(1,:),diff(x,1,1),1-x(end,:)); % the colums of x sum to 1
     R(:,i) = params.Qmin(:,i)+(s-sum(params.Qmin(:,i)))*x; % shift-and-scale x to have column-sum of s
 end
-% R0=R0(:);
+
 V=zeros(T+1,Nh);
 V(1,:)=params.Vini;
 V(end,:)=params.Vend;
 for t=1:T
     V(t+1,:)=V(t,:)+inflow(t,:)-R(t,:);
 end
-
+x0=V(2:end-1,:);
+x0(x0>params.Vmax)=params.Vmax(x0>params.Vmax);
+x0(x0<params.Vmin)=params.Vmin(x0<params.Vmin);
+x0=x0(:);
 end
 
