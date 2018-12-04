@@ -26,9 +26,9 @@ for i=1:Nh
             break;
         end
         
-        l=length(array);
-        k=randi(l);
-        index=array(randperm(l,k));
+        k=length(array);
+%         k=randi(l);
+        index=array(randperm(k));
         % Using the adjacent differences of sorted uniform RVs
         if k==1
             x=rand;
@@ -85,7 +85,7 @@ end
 
 VminViol=max(0,params.Vmin-V(1:end-1,:));
 VmaxViol=max(0,V(1:end-1,:)-params.Vmax);
-VendViol=max(0,abs(V(end,:)-params.Vend));
+VendViol=max(0,abs(V(end,:)-params.Vend)-1e-5);
 PsminViol=max(0,params.Psmin-Ps);
 PsmaxViol=max(0,Ps-params.Psmax);
 viol=[VminViol(:);VmaxViol(:);VendViol(:);PsminViol(:);PsmaxViol(:)];
