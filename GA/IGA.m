@@ -35,7 +35,7 @@ for iter=1:itermax
     idx=BestRank(mergf,epsilon);
     fgbest(iter,:)=mergf(idx(1),:);
     xgbest=mergx(:,idx(1));
-    repnum=ismember(mergx',xgbest','rows');
+    repnum=sum(ismember(mergx',xgbest','rows'));
     
     [f,x]= GASelection(mergf,mergx, epsilon); 
 
