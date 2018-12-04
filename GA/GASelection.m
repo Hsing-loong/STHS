@@ -3,7 +3,7 @@ function [self,selx]= GASelection( f,x, epsilon)
 % Tournament selection
 [D,popsize]=size(x);
 % toursize=fix(0.6*popsize);
-toursize=10;
+toursize=2;
 selsize=popsize/2;
 
 index=zeros(toursize,selsize);
