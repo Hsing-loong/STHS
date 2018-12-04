@@ -11,14 +11,14 @@ params.VP=false;
 
 
 
-sumR=sum(params.I)+params.Vini-params.Vend;
-sumR(3)=sumR(3)+sumR(1)+sumR(2);
-sumR(4)=sumR(4)+sumR(3);
-summinQ=sum(params.Qmin);
-params.Rmax=zeros(T,Nh);
-for t=1:T
-    params.Rmax(t,:)=sumR-summinQ+params.Qmin(t,:);
-end 
+% sumR=sum(params.I)+params.Vini-params.Vend;
+% sumR(3)=sumR(3)+sumR(1)+sumR(2);
+% sumR(4)=sumR(4)+sumR(3);
+% summinQ=sum(params.Qmin);
+% params.Rmax=zeros(T,Nh);
+% for t=1:T
+%     params.Rmax(t,:)=sumR-summinQ+params.Qmin(t,:);
+% end 
 % Imax=params.I;
 % for i=1:Nh
 %     if i<3
@@ -52,10 +52,10 @@ end
 popsize=300;
 itermax=2000;
 
-f=@InitialR;
+f=@Initial;
 for i=1:20
-xmin=params.Qmin(:);
-xmax=params.Rmax(:);
+xmin=params.Vmin(:);
+xmax=params.Vmax(:);
 
 x0=cell2mat(arrayfun(f,1:popsize,'UniformOutput',false));
 
