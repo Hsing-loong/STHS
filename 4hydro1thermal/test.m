@@ -1,0 +1,10 @@
+global params;
+params=load('Data_4Hydro1Thermal.mat');
+[T,Nh]=size(params.I);
+params.DecVarTrans1=@(a) reshape(a,[],Nh);
+params.DecVarTrans2=@(a) a(:);
+params.ObFunc=@ObFunc_4Hydro1Thermal;
+params.PDZ=false;
+params.VP=false;
+V=params.Vmin+rand(T-1,Nh).*(params.Vmax-params.Vmin);
+[obvalue_viol,V,R,Q,Ph,SP,Ps]= ObFunc_4Hydro1Thermal(V);
