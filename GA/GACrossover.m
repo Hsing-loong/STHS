@@ -23,6 +23,8 @@ iscross=binornd(1,p,1,popsize/2);
 x1=parentsx1-iscross.*(rand(1,popsize/2).*parentsndir1+0.5*rand(1,popsize/2).*(parentsx2-parentsx1));
 x2=parentsx2-iscross.*(rand(1,popsize/2).*parentsndir2+0.5*rand(1,popsize/2).*(parentsx1-parentsx2));
 
+
+
 newx=[x1,x2];
 
 
