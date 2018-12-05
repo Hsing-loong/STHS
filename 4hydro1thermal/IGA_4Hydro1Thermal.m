@@ -74,8 +74,8 @@ for i=1:20
 xmin=params.Vmin(:);
 xmax=params.Vmax(:);
 
-x0=cell2mat(arrayfun(f,1:popsize,'UniformOutput',false));
-
+% x0=cell2mat(arrayfun(f,1:popsize,'UniformOutput',false));
+x0=xmin+rand(length(xmin),popsize).*(xmax-xmin);
 % plot(xmin);
 % hold on;
 % plot(xmax);
