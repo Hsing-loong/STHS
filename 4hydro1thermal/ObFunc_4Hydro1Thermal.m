@@ -2,6 +2,11 @@ function  [obvalue_viol,V,R,Q,Ph,SP,Ps]= ObFunc_4Hydro1Thermal(V)
 global params;
 inflow=params.I;
 [T,Nh]=size(inflow);
+% V(V>params.Vmax)=params.Vmax(V>params.Vmax);
+% V(V<params.Vmin)=params.Vmin(V<params.Vmin);
+logic=V>params.Vmax|V<params.Vmin;
+V=logic.*(params.Vmin+rand(T-1,Nh).*(params.Vmax-params.Vmin))+(~logic).*V;
+
 V0=zeros(T,Nh);
 V0(1,:)=params.Vini;
 V0(2:end,:)=V;
@@ -37,7 +42,7 @@ Q2=0.5*(-b-sqrt(discriminant))./a;
 
 Qmin=max(Q1,params.Qmin);
 Qmax=min(min(Q2,params.Qmax),extrpoint);
-Q=R.*(R<=Qmax)+Qmax.*(R>Qmax);
+Q=params.Qmin.*(R<Qmin)+R.*(R>=Qmin&R<=Qmax)+Qmax.*(R>Qmax);
 if params.PDZ
     logic=Q<params.Qpu&Q>params.Qpl;
     Q=Q.*(~logic)+params.Qpl.*(logic);
@@ -56,10 +61,11 @@ VminViol=max(0,params.Vmin-V);
 VmaxViol=max(0,V-params.Vmax);
 % VendViol=max(0,abs(V(end,:)-params.Vend)-1e-5);
 RminViol=max(0,Qmin-R);
+SPViol=max(0,0-SP);
 PsminViol=max(0,params.Psmin-Ps);
 PsmaxViol=max(0,Ps-params.Psmax);
 
-viol=[VminViol(:);VmaxViol(:);RminViol(:);PsminViol(:);PsmaxViol(:)];
+viol=[VminViol(:);VmaxViol(:);RminViol(:);SPViol(:);PsminViol(:);PsmaxViol(:)];
 viol=sum(viol);
 obvalue_viol=[viol,cost];
 end
