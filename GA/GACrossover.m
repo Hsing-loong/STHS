@@ -1,6 +1,5 @@
 function [newx] = GACrossover(self,selx,f,x,p,gama,epsilon)
 [Dx,popsize]=size(selx);
-[~,Df]=size(self);
 parentsidx=randperm(popsize);
 parentsx=selx(:,parentsidx);
 parentsf=self(parentsidx,:);
@@ -9,8 +8,15 @@ parentsf=self(parentsidx,:);
 uniparentsx=uniparentsx';
 uniparentsf=parentsf(unia,:);
 
-fun=@(a,b) ApproxNewtonDirec(a,b,f,x,gama,epsilon);
-parentsndir=cell2mat(cellfun(fun,num2cell(uniparentsf,2)',num2cell(uniparentsx,1),'UniformOutput',false));
+[x,idx,~]=unique(x','rows','stable');
+x=x';
+f=f(idx,:);
+idx=BestRank(f,epsilon);
+x=x(:,idx);
+fun=@(a) ApproxNewtonDirec(a,x,gama);
+parentsndir=cell2mat(cellfun(fun,num2cell(uniparentsx,1),'UniformOutput',false));
+% fun=@(a,b) NewtonDirec(a,b);
+% parentsndir=cell2mat(cellfun(fun,num2cell(uniparentsf,2)',num2cell(uniparentsx,1),'UniformOutput',false));
 parentsndir=parentsndir(:,unic);
 
 parentsx1=parentsx(:,1:popsize/2);
@@ -20,11 +26,17 @@ parentsndir2=parentsndir(:,popsize/2+1:end);
 
 
 iscross=binornd(1,p,1,popsize/2);
-x1=parentsx1-iscross.*(rand(1,popsize/2).*parentsndir1+0.5*rand(1,popsize/2).*(parentsx2-parentsx1));
-x2=parentsx2-iscross.*(rand(1,popsize/2).*parentsndir2+0.5*rand(1,popsize/2).*(parentsx1-parentsx2));
+% x1=parentsx1-iscross.*(rand(1,popsize/2).*parentsndir1+0.5*rand(1,popsize/2).*(parentsx2-parentsx1));
+% x2=parentsx2-iscross.*(rand(1,popsize/2).*parentsndir2+0.5*rand(1,popsize/2).*(parentsx1-parentsx2));
 
-newx=[x1,x2];
+x1=parentsx1-rand(1,popsize/2).*parentsndir1;
+x2=parentsx2-rand(1,popsize/2).*parentsndir2;
 
+% x1=parentsx1-parentsndir1;
+% x2=parentsx2-parentsndir2;
+newx1=(x1+rand(Dx,popsize/2).*binornd(1,0.5,Dx,popsize/2).*(x2-x1));
+newx2=(x2+rand(Dx,popsize/2).*binornd(1,0.5,Dx,popsize/2).*(x1-x2));
+newx=[newx1,newx2];
 
 % parentsx=mat2cell(parentsx,Dx,2*ones(1,popsize/2));
 % parentsf=mat2cell(parentsf,2*ones(1,popsize/2),Df)';
