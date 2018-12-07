@@ -1,4 +1,4 @@
-function  [obvalue_viol,V,R,Q,Ph,SP,Ps]= ObFunc_4Hydro1Thermal(Q)  %#codegen
+function  [obvalue_viol,V1,R,Q,Ph,SP,Ps]= ObFunc_4Hydro1Thermal(Q)  %#codegen
 global params;
 inflow=params.I;
 [T,Nh]=size(inflow);
