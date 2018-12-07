@@ -1,6 +1,6 @@
 function [self,selx]= GASelection( f,x, epsilon)
 % GA select operator
-[D,popsize]=size(x);
+[~,popsize]=size(x);
 % Tournament selection
 
 % toursize=fix(0.6*popsize);
