@@ -9,7 +9,7 @@ function [ xgbest,fgbest ] = IGA(x0,xmin,xmax,popsize,itermax)
 % itermax=2000;
 D=length(xmin);%Number of dimensions
 pc=0.8;
-pm=0.05;
+pm=0.1;
 Tc=0.6*itermax;
 
 x=x0;% individual initialization
@@ -17,9 +17,9 @@ x=x0;% individual initialization
 newf=[];
 newx=[];
 fgbest=zeros(itermax,2);
-% epsilon0=0.8*(sum(f(:,1))/popsize+min(f(:,1)));
-epsilon0=0.6*max(f(:,1));
-cp=log(epsilon0/1e-4);
+epsilon0=0.7*(sum(f(:,1))/popsize+min(f(:,1)));
+% epsilon0=0.6*max(f(:,1));
+cp=log(epsilon0/1e-5);
 % cpmin=cp-3;
 % cpmax=cp+3;
 for iter=1:itermax
@@ -40,27 +40,31 @@ for iter=1:itermax
     
     x=mergx(:,idx(1:popsize));
     f=mergf(idx(1:popsize),:);
-
+    
+%     dist=sqrt(sum((fgbest(iter,:)-f).^2,2));
+%     logic=dist<1;
+%     repnum=sum(logic);
+  
+    
     [self,selx]= GASelection(f,x,epsilon);
     
-    gama=0.6*(xmax-xmin)-(iter-1)/(itermax-1)*0.4*(xmax-xmin);  
+    gama=3*(xmax-xmin)-(iter-1)/(itermax-1)*2.8*(xmax-xmin);  
     crox= GACrossover(self,selx,mergf,mergx,pc,gama,epsilon);
     
     mutx = GAMutation(crox,pm,xmin,xmax,iter,itermax);
 
+%     if repnum>popsize*0.01
+%         mutx=mutx+(rand(1,popsize)<pm).*(randi(2,D,popsize)-1).*(2*tan(pi*(rand(D,popsize)-0.5)));
+%     end
+    
+    
     [newf,newx]=Fitness(mutx);
     
-    dist=sqrt(sum((fgbest(iter,:)-f).^2,2));
-    logic=dist<1;
-    repnum=sum(logic);
-    logic(1)=0;
-    if repnum>popsize*0.9
-        x(:,logic)=xgbest+(randi(2,D,repnum-1)-1).*randn(D,repnum-1);
-        [f(logic,:),x(:,logic)]=Fitness(x(:,logic));
-    end
+
+
     
     
-    disp([num2str(iter),':',num2str([fgbest(iter,:),epsilon])]);
+%     disp([num2str(iter),':',num2str([fgbest(iter,:),epsilon])]);
     
     
       
