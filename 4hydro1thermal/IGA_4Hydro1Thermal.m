@@ -1,14 +1,17 @@
 clc,clear;
 global params;
 params=load('Data_4Hydro1Thermal.mat');
-[T,Nh]=size(params.I);
-params.DecVarTrans1=@(a) reshape(a,[],Nh);
-params.DecVarTrans2=@(a) a(:);
-params.ObFunc=@ObFunc_4Hydro1Thermal;
-
 params.PDZ=false;
 params.VP=false;
 
+[T,Nh]=size(params.I);
+
+global funhandle;
+funhandle.DecVarTrans1=@(a) reshape(a,[],Nh);
+funhandle.DecVarTrans2=@(a) a(:);
+funhandle.ObFunc=@ObFunc_4Hydro1Thermal;
+% funhandle.Fitness=@Fitness;
+funhandle.GradObFunc=@GradObFunc;
 
 
 % sumR=sum(params.I)+params.Vini-params.Vend;
@@ -18,12 +21,12 @@ params.VP=false;
 % params.Rmax=zeros(T,Nh);
 % for t=1:T
 %     params.Rmax(t,:)=sumR-summinQ+params.Qmin(t,:);
-% end 
+% end
 % Imax=params.I;
 % for i=1:Nh
 %     if i<3
-%         
-%         
+%
+%
 %     elseif i<4
 %         Imax(:,i)=Imax(:,i)+...
 %             [zeros(params.Td(1),1);params.Rmax(1:T-params.Td(1),1)]+...
@@ -41,27 +44,28 @@ params.VP=false;
 %     for t=T-1:-1:1
 %         Vmin(t)=Vmin(t+1)-Imax(t+1,i)+params.Qmin(t+1,i);
 %         Vmin(t)=max(Vmin(t),params.Vmin(t,i));
-%     end  
-%     params.Rmax(:,i)=min(params.Rmax(:,i),Vmax+Imax(:,i)-Vmin);    
+%     end
+%     params.Rmax(:,i)=min(params.Rmax(:,i),Vmax+Imax(:,i)-Vmin);
 % end
-    Vmax=zeros(T-1,2);
-    Vmin=zeros(T-1,2);
-    for t=1:T-1
-        if t<2
-            Vmax(t,1:2)=params.Vini(1:2)+params.I(t,1:2)-params.Qmin(t,1:2);
-        else
-            Vmax(t,1:2)=Vmax(t-1,1:2)+params.I(t,1:2)-params.Qmin(t,1:2);
-        end
-        params.Vmax(t,1:2)=min(Vmax(t,1:2),params.Vmax(t,1:2));
+
+Vmax=zeros(T-1,2);
+Vmin=zeros(T-1,2);
+for t=1:T-1
+    if t<2
+        Vmax(t,1:2)=params.Vini(1:2)+params.I(t,1:2)-params.Qmin(t,1:2);
+    else
+        Vmax(t,1:2)=Vmax(t-1,1:2)+params.I(t,1:2)-params.Qmin(t,1:2);
     end
-    for t=T-1:-1:1
-        if t>T-2
-            Vmin(t,1:2)=params.Vend(1:2)-params.I(t+1,1:2)+params.Qmin(t+1,1:2);
-        else
-            Vmin(t,1:2)=Vmin(t+1,1:2)-params.I(t+1,1:2)+params.Qmin(t+1,1:2);
-        end
-        params.Vmin(t,1:2)=max(Vmin(t,1:2),params.Vmin(t,1:2));
+    params.Vmax(t,1:2)=min(Vmax(t,1:2),params.Vmax(t,1:2));
+end
+for t=T-1:-1:1
+    if t>T-2
+        Vmin(t,1:2)=params.Vend(1:2)-params.I(t+1,1:2)+params.Qmin(t+1,1:2);
+    else
+        Vmin(t,1:2)=Vmin(t+1,1:2)-params.I(t+1,1:2)+params.Qmin(t+1,1:2);
     end
+    params.Vmin(t,1:2)=max(Vmin(t,1:2),params.Vmin(t,1:2));
+end
 
 
 
@@ -69,23 +73,18 @@ params.VP=false;
 popsize=300;
 itermax=2000;
 
-f=@Initial;
-for i=1:20
 xmin=params.Vmin(:);
 xmax=params.Vmax(:);
-
-% x0=cell2mat(arrayfun(f,1:popsize,'UniformOutput',false));
-x0=xmin+rand(length(xmin),popsize).*(xmax-xmin);
-% plot(xmin);
-% hold on;
-% plot(xmax);
-% plot(x0);
-[xgbest,fgbest] = IGA(x0,xmin,xmax,popsize,itermax);
-
-
-V=reshape(xgbest,[],4);
-[obvalue_viol,V,R,Q,Ph,SP,Ps]= ObFunc_4Hydro1Thermal(V);
-
-save(['IGA--',num2str(fgbest(end,2)),'.mat']);
+% f=@Initial;
+for i=1:20
+%     x0=cell2mat(arrayfun(f,1:popsize,'UniformOutput',false));
+    x0=xmin+rand(length(xmin),popsize).*(xmax-xmin);
+    [xgbest,fgbest] = IGA(x0,xmin,xmax,popsize,itermax);
+    
+    
+    V=reshape(xgbest,[],4);
+    [obvalue_viol,V,R,Q,Ph,SP,Ps]= ObFunc_4Hydro1Thermal(V);
+    
+    save(['IGA--',num2str(fgbest(end,2)),'.mat']);
 end
 
