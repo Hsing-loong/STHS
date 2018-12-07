@@ -19,7 +19,7 @@ else
     xb=x(:,index);
     deltax=(abs(xw-x0)+abs(x0-xb))*0.5;
 end
-newtondirection=0.5*deltax.*(xb-xw)./(xw-2*x0+xb+1e-12);
+newtondirection=0.5*deltax.*(xw-xb)./(xw-2*x0+xb+1e-12);
 
 end
 
