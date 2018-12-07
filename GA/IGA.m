@@ -12,9 +12,6 @@ pc=0.8;
 pm=0.05;
 Tc=0.6*itermax;
 
-
-
-
 x=x0;% individual initialization
 [f,x]=Fitness(x);
 newf=[];
