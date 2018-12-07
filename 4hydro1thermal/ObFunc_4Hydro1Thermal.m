@@ -2,10 +2,9 @@ function  [obvalue_viol,V,R,Q,Ph,SP,Ps]= ObFunc_4Hydro1Thermal(V)  %#codegen
 global params;
 inflow=params.I;
 [T,Nh]=size(inflow);
-V(V>params.Vmax)=params.Vmax(V>params.Vmax);
-V(V<params.Vmin)=params.Vmin(V<params.Vmin);
-% logic=V>params.Vmax|V<params.Vmin;
-% V=logic.*(params.Vmin+rand(T-1,Nh).*(params.Vmax-params.Vmin))+(~logic).*V;
+
+% V(V>params.Vmax)=params.Vmax(V>params.Vmax);
+% V(V<params.Vmin)=params.Vmin(V<params.Vmin);
 
 V0=zeros(T,Nh);
 V0(1,:)=params.Vini;
@@ -32,28 +31,34 @@ for i=1:Nh
     for t=1+randperm(T-1)
         backwardV=VV;
         backwardV(1:t)=0;
-        [tl,~,Vl]=find(backwardV,1);
+        [tl,~,Vl]=find(backwardV);
+        tl=tl(1);
+        Vl=Vl(1);
         forwardV=VV;
         forwardV(t:end)=0;
-        [tu,~,Vu]=find(forwardV,1,'last');
+        [tu,~,Vu]=find(forwardV);
+        tu=tu(end);
+        Vu=Vu(end);
         
+        Vl=min(max(params.Vmin(t-1,i),Vl-sum(inflow(t:tl-1,i)-params.Qmin(t:tl-1,i))),params.Vmax(t-1,i));
+        Vu=max(min(params.Vmax(t-1,i),Vu+sum(inflow(tu:t-1,i)-params.Qmin(tu:t-1,i))),params.Vmin(t-1,i));
+%         if V(t-1,i)<Vl
+%             V(t-1,i)=Vl;
+%         elseif V(t-1,i)>Vu
+%             V(t-1,i)=Vu;
+%         else
+%         end
         
-        Vl=max(params.Vmin(t-1,i),Vl-sum(inflow(t:tl(1)-1,i)-params.Qmin(t:tl(1)-1,i)));
-        Vu=min(params.Vmax(t-1,i),Vu+sum(inflow(tu(1):t-1,i)-params.Qmin(tu(1):t-1,i)));
-        if V(t-1,i)<Vl(1)||V(t-1,i)>Vu(1)
-            V(t-1,i)=Vl(1)+rand*(Vu(1)-Vl(1));
-            
-            if V(t-1,i)>params.Vmax(t-1,i)
-                V(t-1,i)=params.Vmax(t-1,i);
-            elseif V(t-1,i)>params.Vmin(t-1,i)
-            else
-                V(t-1,i)=params.Vmin(t-1,i);
-            end
+        if V(t-1,i)<Vl||V(t-1,i)>Vu
+            V(t-1,i)=Vl+rand*(Vu-Vl);
         end
         VV(t)=V(t-1,i);
     end
     V0(:,i)=VV(1:end-1);
     V1(:,i)=VV(2:end);
+
+
+
 
     R(:,i)=V0(:,i)+inflow(:,i)-V1(:,i);
 end
