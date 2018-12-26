@@ -7,7 +7,7 @@ function newx = GAMutation(x,p,xmin,xmax,iter,itermax)
 % 
 % 上式中t表示当前代数，T是最大进化，r是(0,1)间均匀产生的随机小数，b是系统参数，决定算法的收敛压力。
 r2=rand(D,popsize);
-delta1=(3*xmax-x).*(1-rand(D,popsize).^(1-iter/itermax));
+delta1=(xmax-x).*(1-rand(D,popsize).^(1-iter/itermax));
 delta2=-(x-xmin).*(1-rand(D,popsize).^(1-iter/itermax));
 delta= ((r2>=0.5).*delta1+(r2<0.5).*delta2);
 
