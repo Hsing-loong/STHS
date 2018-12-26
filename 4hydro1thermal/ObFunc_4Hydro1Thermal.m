@@ -21,12 +21,14 @@ for i=1:Nh
             [zeros(params.Td(3),1);R(1:T-params.Td(3),3)];
     end
     m=1;
-    t=randperm(T);
+    t=randperm(T);  
     while m<T+1
         VT=params.Vini(i)+sum(inflow(:,i)-R(:,i));
         deltaV=VT-params.Vend(i);
-        if abs(deltaV)>1e-12
+        if deltaV<-1e-12
                 R(t(m),i)=max(R(t(m),i)+deltaV,params.Qmin(t(m),i));
+        elseif deltaV>1e-12
+             R(m,i)=R(m,i)+deltaV;
         else
             break;
         end
