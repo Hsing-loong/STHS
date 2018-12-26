@@ -48,7 +48,7 @@ for iter=1:itermax
     
     [self,selx]= GASelection(f,x,epsilon);
     
-    gama=3*(xmax-xmin)-(iter-1)/(itermax-1)*2.8*(xmax-xmin);  
+    gama=0.8*(xmax-xmin)-(iter-1)/(itermax-1)*0.5*(xmax-xmin);  
     crox= GACrossover(self,selx,mergf,mergx,pc,gama,epsilon);
     
     mutx = GAMutation(crox,pm,xmin,xmax,iter,itermax);
@@ -64,7 +64,7 @@ for iter=1:itermax
 
     
     
-%     disp([num2str(iter),':',num2str([fgbest(iter,:),epsilon])]);
+    disp([num2str(iter),':',num2str([fgbest(iter,:),epsilon])]);
     
     
       
