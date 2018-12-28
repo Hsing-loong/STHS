@@ -31,12 +31,15 @@ iscross=binornd(1,p,1,popsize/2);
 
 x1=parentsx1-rand(1,popsize/2).*parentsndir1;
 x2=parentsx2-rand(1,popsize/2).*parentsndir2;
-
-% x1=parentsx1-parentsndir1;
-% x2=parentsx2-parentsndir2;
 newx1=(x1+rand(Dx,popsize/2).*binornd(1,0.5,Dx,popsize/2).*(x2-x1));
 newx2=(x2+rand(Dx,popsize/2).*binornd(1,0.5,Dx,popsize/2).*(x1-x2));
 newx=[newx1,newx2];
+
+
+
+
+
+
 
 % parentsx=mat2cell(parentsx,Dx,2*ones(1,popsize/2));
 % parentsf=mat2cell(parentsf,2*ones(1,popsize/2),Df)';
