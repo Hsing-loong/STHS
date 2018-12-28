@@ -48,10 +48,10 @@ for iter=1:itermax
     
     [self,selx]= GASelection(f,x,epsilon);
     
-    gama=0.8*(xmax-xmin)-(iter-1)/(itermax-1)*0.5*(xmax-xmin);  
+    gama=0.8*(xmax-xmin)-(iter-1)/(itermax-1)*0.75*(xmax-xmin);  
     crox= GACrossover(self,selx,mergf,mergx,pc,gama,epsilon);
     
-    mutx = GAMutation(crox,pm,xmin,xmax,iter,itermax);
+    mutx = GAMutation(crox,pm,xmin,xmax,iter,itermax); 
 
 %     if repnum>popsize*0.01
 %         mutx=mutx+(rand(1,popsize)<pm).*(randi(2,D,popsize)-1).*(2*tan(pi*(rand(D,popsize)-0.5)));
