@@ -15,9 +15,14 @@ newx=x+(rand(1,popsize)<p).*(randi(2,D,popsize)-1).*delta;
 
 % Cauchy(0,1)
 
-% if (1-(size(unique(newx','rows'),1)/popsize))>0.01   
-%     newx=newx+(rand(1,popsize)<p).*(randi(2,D,popsize)-1).*trnd(1,D,popsize);
-% end
+
+[~,IA,~]=uniquetol(newx',1e-1,'ByRows',true,'DataScale',1);
+idex=setdiff((1:D)',IA);
+num=numel(idex);
+if num/popsize>0.01   
+%     newx(:,idex)=newx(:,idex)+(randi(2,D,num)-1).*randn(D,num);
+    newx(:,idex)=newx(:,idex)+(randi(2,D,num)-1).*(0+1*tan(pi*(rand(D,num)-0.5)));
+end
 
 end
 
