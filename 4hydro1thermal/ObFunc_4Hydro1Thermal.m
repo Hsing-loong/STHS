@@ -20,24 +20,26 @@ for i=1:Nh
         inflow(:,i)=inflow(:,i)+...
             [zeros(params.Td(3),1);R(1:T-params.Td(3),3)];
     end
-    m=1;
-    t=randperm(T);
-    while m<T+1
-        VT=params.Vini(i)+sum(inflow(:,i)-R(:,i));
-        deltaV=VT-params.Vend(i);
-        if deltaV<-eps
-            R(t(m),i)=max(R(t(m),i)+deltaV,params.Qmin(t(m),i));
-        elseif deltaV>eps            
-            R(t(m),i)=R(t(m),i)+deltaV;    
-        else
-            break;
-        end
-        m=m+1;
-    end
-    for t=1:T-1
-        V1(t,i)=V0(t,i)+inflow(t,i)-R(t,i);
-        V0(t+1,i)=V1(t,i);
-    end
+%     m=1;
+%     t=randperm(T);
+%     while m<T+1
+%         VT=params.Vini(i)+sum(inflow(:,i)-R(:,i));
+%         deltaV=VT-params.Vend(i);
+%         if deltaV<-eps
+%             R(t(m),i)=max(R(t(m),i)+deltaV,params.Qmin(t(m),i));
+%         elseif deltaV>eps            
+%             R(t(m),i)=R(t(m),i)+deltaV;    
+%         else
+%             break;
+%         end
+%         m=m+1;
+%     end
+%     for t=1:T-1
+%         V1(t,i)=V0(t,i)+inflow(t,i)-R(t,i);
+%         V0(t+1,i)=V1(t,i);
+%     end
+
+
 end
 
 
