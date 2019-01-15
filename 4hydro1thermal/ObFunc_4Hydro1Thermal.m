@@ -37,8 +37,30 @@ for i=1:Nh
 %     for t=1:T-1
 %         V1(t,i)=V0(t,i)+inflow(t,i)-R(t,i);
 %         V0(t+1,i)=V1(t,i);
-%     end
-
+%     end  
+    while 1
+        R(R(:,i)<params.Qmin(:,i),i)=params.Qmin(R(:,i)<params.Qmin(:,i),i);
+        VT=params.Vini(i)+sum(inflow(:,i)-R(:,i));
+        deltaV=VT-params.Vend(i);
+        if deltaV<-eps
+            num=sum(R(:,i)>params.Qmin(:,i));
+            x = sort(rand(num-1,1));
+            x = vertcat(x(1),diff(x,1),1-x(end));
+            x = deltaV*x;
+            R(R(:,i)>params.Qmin(:,i),i)=R(R(:,i)>params.Qmin(:,i),i)+x;
+        elseif deltaV>eps
+            x = sort(rand(T-1,1));
+            x = vertcat(x(1),diff(x,1),1-x(end));
+            x = deltaV*x;
+            R(:,i)=R(:,i)+x;    
+        else
+            break;
+        end
+    end
+    for t=1:T-1
+        V1(t,i)=V0(t,i)+inflow(t,i)-R(t,i);
+        V0(t+1,i)=V1(t,i);
+    end
 
 end
 
