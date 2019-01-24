@@ -25,9 +25,9 @@ for i=1:Nh
     while m<T+1
         VT=params.Vini(i)+sum(inflow(:,i)-R(:,i));
         deltaV=VT-params.Vend(i);
-        if deltaV<-eps
+        if deltaV<-eps(params.Vend(i))
             R(t(m),i)=max(R(t(m),i)+deltaV,params.Qmin(t(m),i));
-        elseif deltaV>eps            
+        elseif deltaV>eps(params.Vend(i))            
             R(t(m),i)=R(t(m),i)+deltaV;    
         else
             break;

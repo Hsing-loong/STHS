@@ -16,10 +16,12 @@ itermax=2000;
 
 xmin=params.Qmin(:);
 xmax=params.Qmax(:);
-% f=@Initial;
+f=@Initial;
+% x=cell2mat(arrayfun(f,1:10000,'UniformOutput',false));
 for i=1:20
-%     x0=cell2mat(arrayfun(f,1:popsize,'UniformOutput',false));
-    x0=xmin+rand(length(xmin),popsize).*(xmax-xmin);
+    x0=cell2mat(arrayfun(f,1:popsize,'UniformOutput',false));
+%     x0=xmin+rand(length(xmin),popsize).*(xmax-xmin);
+%     x0=x(:,randperm(10000,popsize));
     [xgbest,fgbest] = IGA(x0,xmin,xmax,popsize,itermax);
     
     
